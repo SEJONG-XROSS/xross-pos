@@ -9,7 +9,8 @@ const products = [
   { id: 6, name: "초코 브라우니 선데", price: 5200, risk: 2 },
   { id: 7, name: "딸기 치즈케이크 선데", price: 5500, risk: 2 },
   { id: 8, name: "패밀리팩", price: 18000, risk: 2 },
-  { id: 9, name: "와플볼 더블", price: 6200, risk: 2 }
+  { id: 9, name: "와플볼 더블", price: 6200, risk: 2 },
+  { id: 10, name: "설레임임", price: 6400, risk: 2 },
 ];
 
 function formatWon(value) {
@@ -18,29 +19,35 @@ function formatWon(value) {
 
 function getRiskStatus(cartItems) {
   const totalQty = cartItems.reduce((sum, item) => sum + item.qty, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0,
+  );
   const highRiskCount = cartItems.filter((item) => item.risk === 2).length;
 
   if (totalQty >= 12 || totalPrice >= 100000) {
     return {
       level: "danger",
-      message: "위험: 비정상적으로 큰 주문 패턴이 감지되었습니다. 관리자 확인이 필요합니다.",
-      log: "위험 경보 - 고액/대량 주문 패턴 감지"
+      message:
+        "위험: 비정상적으로 큰 주문 패턴이 감지되었습니다. 관리자 확인이 필요합니다.",
+      log: "위험 경보 - 고액/대량 주문 패턴 감지",
     };
   }
 
   if (highRiskCount >= 2 && totalQty >= 6) {
     return {
       level: "warning",
-      message: "주의: 이상행동 가능성이 있는 주문 조합입니다. 결제 전 재확인을 권장합니다.",
-      log: "주의 경보 - 의심 조합 주문 감지"
+      message:
+        "주의: 이상행동 가능성이 있는 주문 조합입니다. 결제 전 재확인을 권장합니다.",
+      log: "주의 경보 - 의심 조합 주문 감지",
     };
   }
 
   return {
     level: "normal",
-    message: "현재 정상 상태입니다. 의심 이벤트가 감지되면 이 영역에 즉시 표시됩니다.",
-    log: null
+    message:
+      "현재 정상 상태입니다. 의심 이벤트가 감지되면 이 영역에 즉시 표시됩니다.",
+    log: null,
   };
 }
 
@@ -51,7 +58,7 @@ export default function App() {
 
   const subtotal = useMemo(
     () => cart.reduce((sum, item) => sum + item.price * item.qty, 0),
-    [cart]
+    [cart],
   );
   const total = subtotal;
   const riskStatus = useMemo(() => getRiskStatus(cart), [cart]);
@@ -74,7 +81,7 @@ export default function App() {
         return [...prev, { ...product, qty: 1 }];
       }
       return prev.map((item) =>
-        item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+        item.id === product.id ? { ...item, qty: item.qty + 1 } : item,
       );
     });
   };
@@ -82,8 +89,10 @@ export default function App() {
   const changeQty = (id, diff) => {
     setCart((prev) =>
       prev
-        .map((item) => (item.id === id ? { ...item, qty: item.qty + diff } : item))
-        .filter((item) => item.qty > 0)
+        .map((item) =>
+          item.id === id ? { ...item, qty: item.qty + diff } : item,
+        )
+        .filter((item) => item.qty > 0),
     );
   };
 
@@ -111,10 +120,12 @@ export default function App() {
       <header className="topbar">
         <div>
           <h1>X-IV 아이스크림 POS</h1>
-          <p className="muted">{dateTime.toLocaleString("ko-KR", { hour12: false })}</p>
+          <p className="muted">
+            {dateTime.toLocaleString("ko-KR", { hour12: false })}
+          </p>
         </div>
         <div className="store-info">
-              <span>매장: 스위트 아이스크림 세종점</span>
+          <span>매장: 스위트 아이스크림 세종점</span>
           <span>POS: #A-03</span>
           <span>직원: 홍길동</span>
         </div>
@@ -136,7 +147,11 @@ export default function App() {
           </div>
           <div className="products-grid">
             {products.map((item) => (
-              <button key={item.id} className="product" onClick={() => addToCart(item)}>
+              <button
+                key={item.id}
+                className="product"
+                onClick={() => addToCart(item)}
+              >
                 <div className="name">{item.name}</div>
                 <div className="price">{formatWon(item.price)}</div>
               </button>
@@ -156,11 +171,17 @@ export default function App() {
                 <div key={row.id} className="cart-row">
                   <div>{row.name}</div>
                   <div className="qty-controls">
-                    <button className="icon-btn" onClick={() => changeQty(row.id, -1)}>
+                    <button
+                      className="icon-btn"
+                      onClick={() => changeQty(row.id, -1)}
+                    >
                       -
                     </button>
                     <strong>{row.qty}</strong>
-                    <button className="icon-btn" onClick={() => changeQty(row.id, 1)}>
+                    <button
+                      className="icon-btn"
+                      onClick={() => changeQty(row.id, 1)}
+                    >
                       +
                     </button>
                   </div>
