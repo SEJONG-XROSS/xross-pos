@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-const API_BASE = "http://43.202.227.251:3000";
+const API_BASE = "/api";
 
 let paymentSeq = 1;
 
